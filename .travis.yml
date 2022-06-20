@@ -7,7 +7,7 @@ before_install:
   - docker build -t hej566/complex-docker -f Dockerfile.dev .
 
 script:
-  - docker run -e CI=true hej566/docker-react npm run test -- --coverage
+  - docker run -e CI=true hej566/complex-docker npm run test -- --coverage
 
 deploy:
   provider: elasticbeanstalk
