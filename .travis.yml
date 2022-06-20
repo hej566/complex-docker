@@ -4,19 +4,29 @@ services:
   - docker
 
 before_install:
-  - docker build -t hej566/complex-docker -f Dockerfile.dev .
+  - docker build -t hej566/complex-docker -f ./client/Dockerfile.dev ./client
 
 script:
   - docker run -e CI=true hej566/complex-docker npm run test -- --coverage
 
-deploy:
-  provider: elasticbeanstalk
-  region: 'us-east-1'
-  app: 'complex-docker'
-  env: 'Dockerreact-env'
-  bucket_name: 'elasticbeanstalk-us-east-1-732146629051'
-  bucket_path: 'complex-docker'
-  on:
-    branch: main
-  access_key_id: $AWS_ACCESS_KEY
-  secret_access_key: $AWS_SECRET_KEY
+after_success:
+  - docker build -t hej566/multi-client ./client
+  - docker build -t hej566/multi-nginx ./nginx
+  - docker build -t hej566/multi-api ./api
+  - docker build -t hej566/multi-worker ./worker
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push hej566/multi-client
+  - docker push hej566/multi-nginx
+  - docker push hej566/multi-api
+  - docker push hej566/multi-worker
+# deploy:
+#   provider: elasticbeanstalk
+#   region: 'us-east-1'
+#   app: 'complex-docker'
+#   env: 'Dockerreact-env'
+#   bucket_name: 'elasticbeanstalk-us-east-1-732146629051'
+#   bucket_path: 'complex-docker'
+#   on:
+#     branch: main
+#   access_key_id: $AWS_ACCESS_KEY
+#   secret_access_key: $AWS_SECRET_KEY
