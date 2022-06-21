@@ -63,7 +63,7 @@ class Fib extends Component {
             value={this.state.nth}
             onChange={(event) => this.setState({ nth: event.target.value })}
           />
-          <button>submit now</button>
+          <button>submit</button>
         </form>
         {this.renderSeenNth()}
         <h3>Calculated Values:</h3>
